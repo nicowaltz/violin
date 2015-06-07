@@ -253,6 +253,18 @@ If a field has been 'checked' or not, meaning it contains one of the following v
 
 If the given input has a match for the regular expression given.
 
+### startsWith(substring)
+
+If the given input string starts with a specific substring
+
+### endsWith(substring)
+
+If the given input string ends with a specific substring
+
+### contains(substring)
+
+If the given input string contains a specific substring
+
 ## Contributing
 
 Please file issues under GitHub, or submit a pull request if you'd like to directly contribute.
