@@ -18,6 +18,9 @@ use Violin\Rules\BetweenRule;
 use Violin\Rules\MatchesRule;
 use Violin\Rules\RequiredRule;
 use Violin\Rules\AlnumDashRule;
+use Violin\Rules\StartsWithRule;
+use Violin\Rules\EndsWithRule;
+use Violin\Rules\ContainsRule;
 
 use Violin\Support\MessageBag;
 
@@ -135,6 +138,69 @@ class RulesTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue(
             $requiredRule->run('  cats  ', [], [])
+        );
+    }
+
+    public function testStartsWithRule()
+    {
+        $startsWithRule = new StartsWithRule;
+
+        $this->assertTrue(
+            $startsWithRule->run('hello', [], ['h'])
+        );
+
+        $this->assertTrue(
+            $startsWithRule->run('hello', [], ['he'])
+        );
+
+        $this->assertFalse(
+            $startsWithRule->run('hello', [], ['el'])
+        );
+
+        $this->assertFalse(
+            $startsWithRule->run('hello', [], [''])
+        );
+    }
+
+    public function testEndsWithRule()
+    {
+        $endsWithRule = new EndsWithRule;
+
+        $this->assertTrue(
+            $endsWithRule->run('hello', [], ['o'])
+        );
+
+        $this->assertTrue(
+            $endsWithRule->run('hello', [], ['lo'])
+        );
+
+        $this->assertFalse(
+            $endsWithRule->run('hello', [], ['he'])
+        );
+
+        $this->assertFalse(
+            $endsWithRule->run('hello', [], [''])
+        );
+    }
+
+    public function testContainsRule()
+    {
+        $containsRule = new ContainsRule;
+
+        $this->assertTrue(
+            $containsRule->run('hello', [], ['ell'])
+        );
+
+        $this->assertTrue(
+            $containsRule->run('hello', [], ['he'])
+        );
+
+        $this->assertFalse(
+            $containsRule->run('hello', [], ['ol'])
+        );
+
+        $this->assertFalse(
+            $containsRule->run('hello', [], [''])
         );
     }
 
