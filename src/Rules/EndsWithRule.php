@@ -12,7 +12,7 @@ class EndsWithRule implements RuleContract
             return false;
         }
         $index = strlen($value) - strlen($args[0]);
-        return (bool)(substr($value, $index) === $args[0]); 
+        return (bool)(substr($value, $index) === $args[0]);
 
     }
 
