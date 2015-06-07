@@ -146,11 +146,11 @@ class RulesTest extends PHPUnit_Framework_TestCase
         $startsWithRule = new StartsWithRule;
 
         $this->assertTrue(
-            $startsWithRule->run('hello', [], ['h'])
+            $startsWithRule->run('hello', [], ['he'])
         );
 
-        $this->assertTrue(
-            $startsWithRule->run('hello', [], ['he'])
+        $this->assertFalse(
+            $startsWithRule->run('hello', [], ['hello, world'])
         );
 
         $this->assertFalse(
@@ -170,8 +170,8 @@ class RulesTest extends PHPUnit_Framework_TestCase
             $endsWithRule->run('hello', [], ['o'])
         );
 
-        $this->assertTrue(
-            $endsWithRule->run('hello', [], ['lo'])
+        $this->assertFalse(
+            $endsWithRule->run('hello', [], ['hello, world'])
         );
 
         $this->assertFalse(
@@ -191,8 +191,8 @@ class RulesTest extends PHPUnit_Framework_TestCase
             $containsRule->run('hello', [], ['ell'])
         );
 
-        $this->assertTrue(
-            $containsRule->run('hello', [], ['he'])
+        $this->assertFalse(
+            $containsRule->run('hello', [], ['hello, world'])
         );
 
         $this->assertFalse(
