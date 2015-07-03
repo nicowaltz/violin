@@ -8,11 +8,15 @@ class EndsWithRule implements RuleContract
 {
     public function run($value, $input, $args)
     {
-        if (strlen($args[0]) === 0) {
-            return false;
-        }
-        $index = strlen($value) - strlen($args[0]);
-        return (bool)(substr($value, $index) === $args[0]);
+        $substring = $args[0];
+        
+        return empty($substring) ? false : $this->endsWith($value, $substring);
+
+    }
+
+    protected function endsWith($value, $substring) {
+        $index = strlen($value) - strlen($substring);
+        return substr($value, $index) === $substring;
 
     }
 
