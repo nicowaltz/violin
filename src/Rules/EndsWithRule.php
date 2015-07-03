@@ -14,7 +14,8 @@ class EndsWithRule implements RuleContract
 
     }
 
-    protected function endsWith($value, $substring) {
+    protected function endsWith($value, $substring)
+    {
         $index = strlen($value) - strlen($substring);
         return substr($value, $index) === $substring;
 
