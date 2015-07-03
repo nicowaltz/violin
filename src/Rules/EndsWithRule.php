@@ -6,18 +6,18 @@ use Violin\Contracts\RuleContract;
 
 class EndsWithRule implements RuleContract
 {
-    public function run($value, $input, $args)
+    public function run($string, $input, $args)
     {
         $substring = $args[0];
         
-        return empty($substring) ? false : $this->endsWith($value, $substring);
+        return empty($substring) ? false : $this->endsWith($string, $substring);
 
     }
 
-    protected function endsWith($value, $substring)
+    protected function endsWith($string, $substring)
     {
-        $index = strlen($value) - strlen($substring);
-        return substr($value, $index) === $substring;
+        $index = strlen($string) - strlen($substring);
+        return substr($string, $index) === $substring;
 
     }
 
