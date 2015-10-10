@@ -8,8 +8,7 @@ class ContainsRule implements RuleContract
 {
     public function run($string, $input, $args)
     {
-        $substring = $args[0];
-        return empty($substring) ? false : $this->contains($string, $substring);
+        return empty($args[0]) ? false : $this->contains($string, $args[0]);
     }
 
     protected function contains($string, $substring)

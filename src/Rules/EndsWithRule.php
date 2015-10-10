@@ -8,10 +8,7 @@ class EndsWithRule implements RuleContract
 {
     public function run($string, $input, $args)
     {
-        $substring = $args[0];
-        
-        return empty($substring) ? false : $this->endsWith($string, $substring);
-
+        return empty($args[0]) ? false : $this->endsWith($string, $args[0]);
     }
 
     protected function endsWith($string, $substring)

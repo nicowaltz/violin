@@ -16,11 +16,12 @@ use Violin\Rules\NumberRule;
 use Violin\Rules\CheckedRule;
 use Violin\Rules\BetweenRule;
 use Violin\Rules\MatchesRule;
+use Violin\Rules\EndsWithRule;
+use Violin\Rules\ContainsRule;
 use Violin\Rules\RequiredRule;
 use Violin\Rules\AlnumDashRule;
 use Violin\Rules\StartsWithRule;
-use Violin\Rules\EndsWithRule;
-use Violin\Rules\ContainsRule;
+
 
 use Violin\Support\MessageBag;
 
