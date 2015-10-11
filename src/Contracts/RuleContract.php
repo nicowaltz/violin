@@ -27,7 +27,7 @@ interface RuleContract
      * If the rule can be skipped, if the value given
      * to the validator is not required.
      *
-     * @return [type] [description]
+     * @return bool
      */
     public function canSkip();
 }

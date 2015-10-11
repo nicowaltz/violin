@@ -62,6 +62,20 @@ class Violin implements ValidatorContract
     protected $fieldAliases = [];
 
     /**
+     * The before registered callbacks.
+     *
+     * @var array
+     */
+    protected $before = [];
+
+    /**
+     * The after registered callbacks.
+     *
+     * @var array
+     */
+    protected $after = [];
+
+    /**
      * Kick off the validation using input and rules.
      *
      * @param  array  $input
@@ -86,18 +100,49 @@ class Violin implements ValidatorContract
 
         $this->input = $data;
 
+        // Loop through all of the before callbacks and execute them.
+        foreach ($this->before as $before) {
+            call_user_func_array($before, [ $this ]);
+        }
+
         foreach ($data as $field => $value) {
             $fieldRules = explode('|', $rules[$field]);
 
             foreach ($fieldRules as $rule) {
-                $this->validateAgainstRule(
+                $continue = $this->validateAgainstRule(
                     $field,
                     $value,
                     $this->getRuleName($rule),
                     $this->getRuleArgs($rule)
                 );
+
+                // If the rule hasn't passed and it isn't skippable, then we
+                // don't need to validate the rest of the rules in the current
+                // field.
+                if (! $continue) {
+                    break;
+                }
             }
         }
+
+        return $this;
+    }
+
+    public function before(Closure $closure)
+    {
+        $this->before[] = $closure;
+
+        return $this;
+    }
+
+    /**
+     * Register an after callback.
+     * @param  Closure $closure
+     * @return this
+     */
+    public function after(Closure $closure)
+    {
+        $this->after[] = $closure;
 
         return $this;
     }
@@ -109,6 +154,11 @@ class Violin implements ValidatorContract
      */
     public function passes()
     {
+        // Loop through all of the after callbacks and execute them.
+        foreach ($this->after as $after) {
+            call_user_func_array($after, [ $this ]);
+        }
+
         return empty($this->errors);
     }
 
@@ -280,10 +330,6 @@ class Violin implements ValidatorContract
     {
         $ruleToCall = $this->getRuleToCall($rule);
 
-        if ($this->canSkipRule($ruleToCall, $value)) {
-            return;
-        }
-        
         $passed = call_user_func_array($ruleToCall, [
             $value,
             $this->input,
@@ -291,8 +337,14 @@ class Violin implements ValidatorContract
         ]);
 
         if (!$passed) {
+            // If the rule didn't pass the validation, we will handle the error,
+            // and we check if we need to skip the next rules.
             $this->handleError($field, $value, $rule, $args);
+
+            return $this->canSkipRule($ruleToCall, $value);
         }
+
+        return true;
     }
 
     /**
@@ -311,7 +363,7 @@ class Violin implements ValidatorContract
         return (
             (is_array($ruleToCall) &&
             method_exists($ruleToCall[0], 'canSkip') &&
-            $ruleToCall[0]->canSkip()) &&
+            $ruleToCall[0]->canSkip()) ||
             empty($value) &&
             !is_array($value)
         );
@@ -344,6 +396,16 @@ class Violin implements ValidatorContract
             'value' => $value,
             'args' => $args,
         ];
+    }
+
+    /**
+     * Gets the received input.
+     *
+     * @return array
+     */
+    public function getInput()
+    {
+        return $this->input;
     }
 
     /**

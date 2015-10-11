@@ -1,6 +1,6 @@
-# violin
+# Violin
 
-[![Build Status](https://travis-ci.org/alexgarrett/violin.svg?branch=master)](https://travis-ci.org/alexgarrett/violin)
+[![Build Status](https://travis-ci.org/alexgarrett/violin.svg?branch=master)](https://travis-ci.org/alexgarrett/violin) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/alexgarrett/violin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Violin is an easy to use, highly customisable PHP validator.
 
@@ -105,6 +105,26 @@ $v->validate([
 
 // Error output: "Username is required."
 ```
+
+### Callbacks
+
+Violin allows you to attach callbacks to be run **before** or **after** any validation. This might be useful if you need to do some further validation, or maybe raise an event.
+You can add as many **before** and **after** callbacks as you want, and you can also use the current Violin instance within them.
+
+Examples:
+
+```php
+$v->before(function($violin) {
+    // This will happen before the validation..
+});
+```
+
+```php
+$v->after(function($violin) {
+    // This will happen after the validation..
+});
+```
+
 ### Extending Violin
 
 You can extend the Violin class to add custom rules, rule messages and field messages. This way, you can keep a tidy class to handle custom validation if you have any dependencies, like a database connection or language files.
@@ -168,10 +188,6 @@ If the value is alphanumeric. Dashes and underscores are permitted.
 #### alpha
 
 If the value is alphabetic letters only.
-
-#### alphaDash
-
-If the value is alphabetic letters only. Dashes and underscores are permitted.
 
 #### array
 

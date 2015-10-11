@@ -109,8 +109,8 @@ class ValidatorTest extends PHPUnit_Framework_TestCase
         $errors = $this->v->errors();
 
         $this->assertEquals(
-            $errors->get('username'),
-            ['This field is required!']
+            $errors->first('username'),
+            'This field is required!'
         );
 
         $this->assertEquals(
@@ -157,8 +157,8 @@ class ValidatorTest extends PHPUnit_Framework_TestCase
         $errors = $this->v->errors();
 
         $this->assertEquals(
-            $errors->get('username'),
-            ['We need a username, please.']
+            $errors->first('username'),
+            'We need a username, please.'
         );
 
         $this->assertEquals(
@@ -267,6 +267,56 @@ class ValidatorTest extends PHPUnit_Framework_TestCase
             'email' => ['', 'alpha|email']
         ]);
 
-        $this->assertEmpty($this->v->errors()->all());
+        $this->assertEquals(
+            $this->v->errors()->first('email'),
+            'email must be alphabetic.'
+        );
+    }
+
+    public function testBeforeCallbackOnValidation()
+    {
+        $this->v->before(function($v) {
+            $this->assertEquals($v->getInput()['user'], 'Billy');
+        });
+
+        $this->v->validate([
+            'user' => ['Billy', 'required|alpha|max(5)']
+        ]);
+
+        $this->assertTrue($this->v->passes());
+    }
+
+    public function testAfterCallbackOnValidation()
+    {
+        $alphaMessage = 'The {field} needs letters!';
+        $maxMessage   = 'You need to have less than {$0} characters.';
+
+        $this->v->after(function($v) use ($maxMessage) {
+            if (! $v->errors()->isEmpty()) {
+                $v->addFieldMessage('user', 'max', $maxMessage);
+            }
+        });
+
+        $this->v->after(function($v) use ($alphaMessage) {
+            if (! $v->errors()->isEmpty()) {
+                $v->addFieldMessage('user', 'alpha', $alphaMessage);
+            }
+        });
+
+        $this->v->validate([
+            'user' => ['Billy2', 'required|alpha|max(3)']
+        ]);
+
+        $this->assertFalse($this->v->passes());
+
+        $this->assertEquals(
+            $this->v->errors()->all('user')[0],
+            'The user needs letters!'
+        );
+
+        $this->assertEquals(
+            $this->v->errors()->all('user')[1],
+            'You need to have less than 3 characters.'
+        );
     }
 }
