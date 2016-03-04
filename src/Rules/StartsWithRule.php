@@ -14,8 +14,7 @@ class StartsWithRule implements RuleContract
     protected function startsWith($string, $substring)
     {
         $length = strlen($substring);
-        $start = 0;
-        return substr($string, $start, $length) === $substring;
+        return substr($string, 0, $length) === $substring;
     }
 
     public function error()
